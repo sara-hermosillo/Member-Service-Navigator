@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Member Service Navigator</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--tx:#14213d;--mu:#5b6b85;--bd:#dde4ee;--pr:#0a5cab;--prt:#fff;--soft:#e6f0fb;--ok:#117a4d;--warn:#b45309;--warnb:#fff4e0;--bad:#b42318;--badb:#fdeceb;--mark:#fff1a8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1624;--card:#18223a;--tx:#e8eefb;--mu:#9bacc9;--bd:#2a3856;--pr:#5aa9ff;--prt:#07182e;--soft:#1d3156;--ok:#4cd39b;--warn:#f5b455;--warnb:#3a2c12;--bad:#ff8b80;--badb:#3d1b1a;--mark:#5c4b00}}
+:root[data-theme="dark"]{--bg:#0f1624;--card:#18223a;--tx:#e8eefb;--mu:#9bacc9;--bd:#2a3856;--pr:#5aa9ff;--prt:#07182e;--soft:#1d3156;--ok:#4cd39b;--warn:#f5b455;--warnb:#3a2c12;--bad:#ff8b80;--badb:#3d1b1a;--mark:#5c4b00}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{background:var(--pr);color:var(--prt);padding:14px 20px}header h1{margin:0;font-size:18px}header p{margin:2px 0 0;font-size:13px;opacity:.9}
+main{max-width:1280px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+h2{font-size:14px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu)}
+.search{display:flex;gap:8px;flex-wrap:wrap}.search input{flex:1;min-width:200px}
+input,button{font:inherit}input{padding:10px 12px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx)}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:8px 12px;border-radius:8px}
+button:hover{border-color:var(--pr)}button.pri{background:var(--pr);color:var(--prt);border-color:var(--pr);font-weight:600}
+button:focus-visible,input:focus-visible{outline:2px solid var(--pr);outline-offset:1px}
+.hint{font-size:13px;color:var(--mu);margin-top:8px}.hint button{padding:2px 8px;font-size:12px;margin:2px}
+.msg{padding:10px 12px;border-radius:8px;margin-top:10px;font-size:14px}.err{background:var(--badb);color:var(--bad)}
+.grid{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px;align-items:start}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}}
+.empty{color:var(--mu);text-align:center;padding:24px 8px;font-size:14px}
+.mh{display:flex;gap:12px;align-items:center}.av{width:44px;height:44px;border-radius:50%;background:var(--soft);color:var(--pr);display:grid;place-items:center;font-weight:700}
+.mh b{font-size:17px}.sub{color:var(--mu);font-size:13px}
+.tags span{display:inline-block;background:var(--soft);color:var(--pr);border-radius:99px;padding:2px 9px;font-size:12px;margin:6px 4px 0 0}
+details{border-top:1px solid var(--bd);padding:8px 0}details:first-of-type{border-top:0}summary{cursor:pointer;font-weight:600;font-size:14px}
+summary .n{background:var(--soft);color:var(--pr);border-radius:99px;padding:0 8px;font-size:12px;margin-left:6px}
+li{margin:5px 0;font-size:14px}ul{padding-left:18px;margin:6px 0}
+.concern{background:var(--soft);border-radius:10px;padding:12px;margin-bottom:12px}.concern.urgent{background:var(--badb)}
+.concern .big{font-size:18px;font-weight:700}.concern small{color:var(--mu)}
+.tr{height:230px;overflow:auto;border:1px solid var(--bd);border-radius:8px;padding:8px;background:var(--bg)}
+.line{margin:6px 0;font-size:14px}.line b{font-size:11px;text-transform:uppercase;color:var(--mu);display:block}.line.m b{color:var(--pr)}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+.compose{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.compose input{flex:1;min-width:140px}
+.seg{display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden}.seg button{border:0;border-radius:0}.seg button.on{background:var(--pr);color:var(--prt)}
+.sug{border-left:4px solid var(--pr);background:var(--bg);padding:8px 10px;margin:8px 0;border-radius:6px;font-size:14px}.sug.urgent{border-color:var(--bad);background:var(--badb)}.sug b{display:block}
+.hist{list-style:none;padding:0}.hist li{display:flex;justify-content:space-between;gap:8px;border-bottom:1px dashed var(--bd);padding:6px 0}.hist .d{color:var(--mu);font-size:12px;white-space:nowrap}
+.chat{height:250px;overflow:auto;border:1px solid var(--bd);border-radius:8px;padding:8px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
+.b{max-width:92%;padding:8px 10px;border-radius:10px;font-size:14px;white-space:pre-wrap}.b.u{align-self:flex-end;background:var(--pr);color:var(--prt)}.b.a{background:var(--card);border:1px solid var(--bd)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.chips button{font-size:13px;border-radius:99px;padding:5px 10px}
+.toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:.2s;pointer-events:none}.toast.show{opacity:1}
+.pill{font-size:11px;padding:1px 7px;border-radius:99px;background:var(--warnb);color:var(--warn);margin-left:6px}
+</style></head><body>
+<header><h1>Member Service Navigator</h1><p>Real-time member context, call insights and resource suggestions for service representatives · Demo data</p></header>
+<main>
+<section class="card" aria-label="Member lookup">
+<h2>1 · Find member</h2>
+<div class="search"><input id="q" placeholder="Enter member ID or name (e.g. KP-100231)" aria-label="Member ID or name"><button class="pri" id="go">Find member</button></div>
+<div class="hint">Demo members: <button data-q="KP-100231">Maria Alvarez</button><button data-q="KP-204518">James Okafor</button><button data-q="KP-317CHEN">Linda Chen</button></div>
+<div id="lookupMsg"></div>
+</section>
+<div class="grid">
+<div>
+<section class="card"><h2>Member profile</h2><div id="profile"><div class="empty">Search for a member to load their profile, appointments, refills, surgeries and payments.</div></div></section>
+</div>
+<div>
+<section class="card"><h2>Main concern</h2><div id="concern"><div class="empty">Load a member and start the call transcript to detect the main health concern.</div></div>
+<h2 style="margin-top:12px">Concern history</h2><ul class="hist" id="hist"><li class="sub">No history yet.</li></ul></section>
+<section class="card"><h2>2 · Call transcript</h2>
+<div class="tr" id="tr"><div class="empty">No conversation yet. Add lines below or play a sample call.</div></div>
+<div class="compose"><div class="seg" id="spk"><button class="on" data-s="Member">Member</button><button data-s="Rep">Rep</button></div><input id="line" placeholder="Type what was said…" aria-label="Transcript line"><button class="pri" id="add">Add</button></div>
+<div class="compose"><button id="demo">▶ Play sample call</button><button id="clr">Clear</button></div>
+<h2 style="margin-top:14px">AI suggestions</h2><div id="sugs"><div class="empty">Suggestions appear when key terms are detected.</div></div></section>
+</div>
+<div>
+<section class="card"><h2>3 · Assistant</h2>
+<div class="chips" id="chips"></div>
+<div class="chat" id="chat"><div class="b a">Hi! Load a member, then ask me anything or tap a quick action.</div></div>
+<div class="compose"><input id="ask" placeholder="Ask a follow-up question…" aria-label="Ask assistant"><button class="pri" id="send">Send</button></div></section>
+</div></div></main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const M={
+"KP-100231":{name:"Maria Alvarez",dob:"04/12/1978",plan:"Kaiser Permanente Silver 70 HMO",pcp:"Dr. Priya Nair, Walnut Creek",phone:"(925) 555-0142",conds:["Type 2 diabetes","Hypertension"],
+appts:[["Oct 21, 9:30 AM","Primary care – A1C follow-up"],["Nov 4, 2:00 PM","Eye exam – Ophthalmology"]],refills:[["Metformin 500mg","Due Oct 18 · 2 refills left"],["Lisinopril 10mg","Due Oct 29 · 0 refills – needs renewal"]],surg:[],pay:[["Copay – Lab work","$25.00","Due Oct 24"]],
+ben:["Diabetes Prevention & Management program","Free nutrition coaching","$0 mail-order pharmacy delivery"],
+past:[["Sep 12","Diabetes management"],["Aug 3","Appointment access"]]},
+"KP-204518":{name:"James Okafor",dob:"09/30/1965",plan:"Kaiser Permanente Gold 80 PPO",pcp:"Dr. Alan Brooks, Oakland",phone:"(510) 555-0177",conds:["Lumbar disc herniation","High cholesterol"],
+appts:[["Oct 19, 11:00 AM","Pre-op consult – Orthopedics"]],refills:[["Atorvastatin 20mg","Due Oct 22 · 3 refills left"],["Naproxen 500mg","Due Oct 17 · 1 refill left"]],surg:[["Oct 28, 7:30 AM","Lumbar microdiscectomy – Oakland Medical Center"]],pay:[["Surgery deductible balance","$480.00","Due Oct 30"],["Physical therapy copay","$30.00","Due Nov 2"]],
+ben:["Physical therapy – 12 visits covered","Post-surgical home care support","Payment plan & financial assistance"],
+past:[["Oct 2","Back pain"],["Sep 20","Billing"]]},
+"KP-317CHEN":{name:"Linda Chen",dob:"01/22/1990",plan:"Kaiser Permanente Bronze 60 HMO",pcp:"Dr. Samuel Reyes, San Jose",phone:"(408) 555-0109",conds:["Generalized anxiety","Migraine"],
+appts:[["Oct 17, 3:15 PM","Therapy session – Behavioral health"]],refills:[["Sertraline 50mg","Due Oct 20 · 4 refills left"]],surg:[],pay:[["Specialist copay","$40.00","Due Oct 26"]],
+ben:["Mental health: self-care apps (myStrength)","Same-week behavioral health visits","Virtual care – 24/7 advice nurse"],
+past:[["Sep 28","Mental health"]]}};
+const C={
+back:{label:"Back pain",t:["back pain","back hurts","spine","sciatica","disc"],s:["Offer physical therapy referral","Book ortho/primary care visit; mention PT benefit"]},
+diab:{label:"Diabetes management",t:["diabetes","blood sugar","a1c","glucose","insulin","metformin"],s:["Enroll in Diabetes Management program","Offer nutrition coaching & schedule A1C follow-up"]},
+mh:{label:"Mental health",t:["anxious","anxiety","panic","depressed","stress","can't sleep","therapy"],s:["Book behavioral health visit (same-week available)","Share self-care app access & 24/7 advice line"]},
+bill:{label:"Billing & payments",t:["bill","payment","copay","owe","charge","balance","deductible","afford"],s:["Review balance & due dates","Offer payment plan / financial assistance"]},
+rx:{label:"Prescription refill",t:["refill","prescription","pharmacy","medication","pills","run out"],s:["Request refill or renewal from PCP","Offer $0 mail-order delivery"]},
+appt:{label:"Appointment access",t:["appointment","book","schedule","reschedule","cancel","wait time"],s:["Find earliest slot or video visit","Set reminder via app/text"]},
+surg:{label:"Upcoming surgery",t:["surgery","operation","pre-op","anesthesia","hospital"],s:["Review pre-op instructions & fasting rules","Confirm post-surgical home care & ride"]},
+urg:{label:"Urgent symptoms",urgent:1,t:["chest pain","can't breathe","shortness of breath","severe","fainted","emergency","stroke"],s:["Screen immediately: advise 911 / ER if emergency","Transfer to 24/7 advice nurse"]}};
+const SAMPLE=[["Member","Hi, I've been dealing with severe back pain and I'm nervous about my surgery coming up."],["Rep","I'm sorry to hear that. Let me pull up your record."],["Member","Also I got a bill for my deductible and I'm not sure I can afford it all at once."],["Rep","I can help with that. Anything else?"],["Member","I'm about to run out of my medication too, I need a refill."]];
+let cur=null,tr=[],spk="Member",hist=[],chat=[];
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const toast=t=>{const e=$("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),1800)};
+function find(v){v=v.trim().toLowerCase();if(!v)return null;return Object.entries(M).find(([id,m])=>id.toLowerCase()===v||m.name.toLowerCase().includes(v))}
+function lookup(v){const m=$("lookupMsg");if(!v.trim()){m.innerHTML='<div class="msg err">Please enter a member ID or name.</div>';return}
+const r=find(v);if(!r){m.innerHTML='<div class="msg err">No member found for “'+esc(v)+'”. Check the ID or try a demo member below.</div>';return}
+cur={id:r[0],...r[1]};tr=[];chat=[];hist=cur.past.map(p=>({d:p[0],c:p[1],past:1}));m.innerHTML='<div class="msg" style="background:var(--soft)">Loaded '+esc(cur.name)+' ('+cur.id+')</div>';
+$("chat").innerHTML='<div class="b a">Loaded '+esc(cur.name)+'. Ask a question or use a quick action.</div>';renderAll();toast("Profile loaded")}
+function renderProfile(){if(!cur){$("profile").innerHTML='<div class="empty">Search for a member to load their profile, appointments, refills, surgeries and payments.</div>';return}
+const L=(a,f,e)=>a.length?"<ul>"+a.map(f).join("")+"</ul>":'<div class="sub">'+e+"</div>";
+$("profile").innerHTML=`<div class="mh"><div class="av">${cur.name.split(" ").map(x=>x[0]).join("")}</div><div><b>${esc(cur.name)}</b><div class="sub">${cur.id} · DOB ${cur.dob}</div></div></div>
+<div class="sub" style="margin-top:8px">${esc(cur.plan)}<br>PCP: ${esc(cur.pcp)}<br>${cur.phone}</div><div class="tags">${cur.conds.map(c=>"<span>"+esc(c)+"</span>").join("")}</div>
+<div style="margin-top:10px">
+<details open><summary>Suggested benefits<span class="n">${cur.ben.length}</span></summary>${L(cur.ben,b=>"<li>"+esc(b)+"</li>","")}</details>
+<details open><summary>Upcoming appointments<span class="n">${cur.appts.length}</span></summary>${L(cur.appts,a=>"<li><b>"+a[0]+"</b><br>"+a[1]+"</li>","None scheduled.")}</details>
+<details><summary>Upcoming refills<span class="n">${cur.refills.length}</span></summary>${L(cur.refills,r=>"<li><b>"+r[0]+"</b><br>"+r[1]+"</li>","None due.")}</details>
+<details><summary>Upcoming surgeries<span class="n">${cur.surg.length}</span></summary>${L(cur.surg,s=>"<li><b>"+s[0]+"</b><br>"+s[1]+"</li>","No surgeries scheduled.")}</details>
+<details><summary>Upcoming payments<span class="n">${cur.pay.length}</span></summary>${L(cur.pay,p=>"<li><b>"+p[1]+"</b> – "+p[0]+"<br>"+p[2]+"</li>","No payments due.")}</details></div>`}
+function detect(){const sc={};tr.filter(l=>l.s==="Member").forEach((l,i)=>{const t=l.t.toLowerCase();for(const k in C){const n=C[k].t.filter(w=>t.includes(w)).length;if(n)sc[k]=(sc[k]||0)+n*10+i}});return sc}
+function renderTr(){const box=$("tr");if(!tr.length){box.innerHTML='<div class="empty">No conversation yet. Add lines below or play a sample call.</div>';return}
+const all=[...new Set(Object.values(C).flatMap(c=>c.t))].sort((a,b)=>b.length-a.length).map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"));const re=new RegExp("("+all.join("|")+")","gi");
+box.innerHTML=tr.map(l=>`<div class="line ${l.s==="Member"?"m":""}"><b>${l.s}</b>${esc(l.t).replace(re,"<mark>$1</mark>")}</div>`).join("");box.scrollTop=box.scrollHeight}
+function renderIns(){const sc=detect(),ks=Object.keys(sc).sort((a,b)=>sc[b]-sc[a]);
+if(!ks.length){$("concern").innerHTML='<div class="empty">'+(cur?"No concern detected yet. Add transcript lines.":"Load a member and start the call transcript to detect the main health concern.")+"</div>";$("sugs").innerHTML='<div class="empty">Suggestions appear when key terms are detected.</div>'}
+else{const top=ks.find(k=>C[k].urgent)||ks[0],c=C[top];$("concern").innerHTML=`<div class="concern ${c.urgent?"urgent":""}"><small>Main concern this call</small><div class="big">${c.urgent?"⚠ ":""}${c.label}</div>${ks.length>1?"<small>Also mentioned: "+ks.filter(k=>k!==top).map(k=>C[k].label).join(", ")+"</small>":""}</div>`;
+const today="Today";hist=hist.filter(h=>!h.live);ks.slice().reverse().forEach(k=>hist.unshift({d:today,c:C[k].label,live:1,top:k===top}));
+$("sugs").innerHTML=ks.map(k=>`<div class="sug ${C[k].urgent?"urgent":""}"><b>${C[k].label}</b>${C[k].s.map(x=>"• "+x).join("<br>")}</div>`).join("")}
+$("hist").innerHTML=hist.length?hist.map(h=>`<li><span>${h.c}${h.top?'<span class="pill">main</span>':""}</span><span class="d">${h.d}</span></li>`).join(""):'<li class="sub">No history yet.</li>'}
+function renderChips(){$("chips").innerHTML=["Summarize call","Suggested next steps","Upcoming appointments","Refills","Payments","Benefits"].map(c=>`<button>${c}</button>`).join("");$("chips").querySelectorAll("button").forEach(b=>b.onclick=()=>ask(b.textContent))}
+function renderAll(){renderProfile();renderTr();renderIns()}
+function reply(q){const t=q.toLowerCase();if(!cur)return"Please load a member first so I can give accurate answers.";
+const sc=detect(),ks=Object.keys(sc).sort((a,b)=>sc[b]-sc[a]);
+if(/summar|recap/.test(t)){if(!tr.length)return"There's no transcript yet. Add what the member says and I'll summarize.";return`Call summary for ${cur.name}:\n• Main concern: ${ks.length?C[ks.find(k=>C[k].urgent)||ks[0]].label:"not identified"}\n• Topics: ${ks.map(k=>C[k].label).join(", ")||"–"}\n• ${tr.length} lines exchanged.`}
+if(/next|step|recommend|suggest/.test(t)){if(!ks.length)return"No concerns detected yet. Based on the profile: confirm upcoming appointment "+(cur.appts[0]?cur.appts[0][0]:"(none)")+" and review benefits.";return"Suggested next steps:\n"+ks.map(k=>"• "+C[k].label+": "+C[k].s[0]).join("\n")}
+if(/appoint|visit|schedule/.test(t))return cur.appts.length?"Upcoming appointments:\n"+cur.appts.map(a=>"• "+a[0]+" – "+a[1]).join("\n"):"No upcoming appointments on file. I can suggest booking one.";
+if(/refill|prescri|medic|pharm/.test(t))return cur.refills.length?"Refills:\n"+cur.refills.map(a=>"• "+a[0]+" – "+a[1]).join("\n"):"No refills coming due.";
+if(/surg|operat/.test(t))return cur.surg.length?"Upcoming surgery:\n"+cur.surg.map(a=>"• "+a[0]+" – "+a[1]).join("\n"):cur.name+" has no surgeries scheduled.";
+if(/pay|bill|balance|copay|owe/.test(t))return cur.pay.length?"Upcoming payments:\n"+cur.pay.map(a=>"• "+a[1]+" "+a[0]+" ("+a[2]+")").join("\n")+"\nA payment plan or financial assistance can be offered.":"No payments due.";
+if(/benefit|resource|program/.test(t))return"Suggested benefits for "+cur.name+":\n"+cur.ben.map(b=>"• "+b).join("\n");
+if(/concern|history|past/.test(t))return"Concern history:\n"+hist.map(h=>"• "+h.d+": "+h.c).join("\n");
+if(/plan|coverage|insurance|pcp|doctor/.test(t))return cur.plan+"\nPCP: "+cur.pcp;
+return"I can help with appointments, refills, surgeries, payments, benefits, concern history, a call summary or next steps. Try one of the quick actions."}
+function ask(q){q=q.trim();if(!q){toast("Type a question first");return}
+const c=$("chat");c.insertAdjacentHTML("beforeend",`<div class="b u">${esc(q)}</div>`);c.insertAdjacentHTML("beforeend",'<div class="b a" id="typing">…</div>');c.scrollTop=c.scrollHeight;
+setTimeout(()=>{$("typing").outerHTML=`<div class="b a">${esc(reply(q))}</div>`;c.scrollTop=c.scrollHeight},350);$("ask").value=""}
+function addLine(s,t){tr.push({s,t});renderTr();renderIns()}
+$("go").onclick=()=>lookup($("q").value);$("q").onkeydown=e=>{if(e.key==="Enter")lookup($("q").value)};
+document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{$("q").value=b.dataset.q;lookup(b.dataset.q)});
+document.querySelectorAll("#spk button").forEach(b=>b.onclick=()=>{spk=b.dataset.s;document.querySelectorAll("#spk button").forEach(x=>x.classList.toggle("on",x===b))});
+function add(){const t=$("line").value.trim();if(!cur){toast("Load a member first");return}if(!t){toast("Enter a line first");return}addLine(spk,t);$("line").value=""}
+$("add").onclick=add;$("line").onkeydown=e=>{if(e.key==="Enter")add()};
+$("demo").onclick=()=>{if(!cur){toast("Load a member first");return}tr=[];SAMPLE.forEach((l,i)=>setTimeout(()=>addLine(l[0],l[1]),i*700))};
+$("clr").onclick=()=>{tr=[];hist=hist.filter(h=>!h.live);renderTr();renderIns();toast("Transcript cleared")};
+$("send").onclick=()=>ask($("ask").value);$("ask").onkeydown=e=>{if(e.key==="Enter")ask($("ask").value)};
+renderChips();
+</script></body></html>
